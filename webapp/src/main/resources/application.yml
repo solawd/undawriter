@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: undawriter-insure
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
+
+undawriter:
+  app:
+    jwtSecret: QWt3YWFiYUluc3VyZVNlY3JldEtleUFrd2FhYmFJbnN1cmVTZWNyZXRLZXk=
+    jwtExpirationMs: 86400000
+
+server:
+  port: 8080
+  error:
+    whitelabel:
+      enabled: false
+
+# Fallback basic DB config if no profile provides it
+spring.datasource.url: jdbc:h2:mem:testdb
+spring.datasource.driverClassName: org.h2.Driver
+spring.datasource.username: sa
+spring.datasource.password:
+spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
