@@ -78,7 +78,7 @@ export default function Claims() {
                             <p className="text-gray-500 mb-1">Evidences</p>
                             <div className="flex flex-wrap gap-2">
                                 {claim.evidenceUrls.map((url: string, i: number) => (
-                                    <a key={i} href={`http://localhost:8080${url}`} target="_blank" rel="noreferrer" className="text-blue-500 hover:underline text-xs flex items-center gap-1 bg-blue-50 px-2 py-1 rounded">
+                                    <a key={i} href={url} target="_blank" rel="noreferrer" className="text-blue-500 hover:underline text-xs flex items-center gap-1 bg-blue-50 px-2 py-1 rounded">
                                         <span>📄</span> View Document {i+1}
                                     </a>
                                 ))}

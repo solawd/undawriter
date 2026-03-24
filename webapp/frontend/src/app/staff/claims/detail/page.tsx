@@ -100,7 +100,7 @@ function StaffClaimDetailContent() {
             {claim.evidenceUrls && claim.evidenceUrls.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {claim.evidenceUrls.map((url: string, i: number) => {
-                      const fullUrl = `http://localhost:8080${url}`; // Ensure explicit backend URL for images
+                      const fullUrl = url; // Use relative URL since backend serves frontend
                       return isImage(url) ? (
                           <a key={i} href={fullUrl} target="_blank" rel="noreferrer" className="group block relative aspect-square overflow-hidden rounded-xl border-2 border-gray-100 hover:border-primary transition-all">
                               {/* eslint-disable-next-line @next/next/no-img-element */}
