@@ -15,10 +15,12 @@ cd "$(dirname "$0")"
 mvn clean package -DskipTests
 
 echo "Finding the generated JAR file..."
-JAR_FILE=$(find target -maxdepth 1 -name "*.jar" | grep -v "-plain" | grep -v "original" | head -n 1)
+JAR_FILE=$(find target -maxdepth 1 -name "*.jar" ! -name "*-plain.jar" ! -name "*.original" | head -n 1)
 
 if [ -z "$JAR_FILE" ]; then
     echo "Error: No JAR file found in the target/ directory!"
+    echo "Contents of target directory:"
+    ls -l target/
     exit 1
 fi
 
