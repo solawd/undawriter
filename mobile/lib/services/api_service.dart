@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  // Use 127.0.0.1 for iOS simulator, 10.0.2.2 for Android emulator
-  static final String _baseUrl = Platform.isAndroid ? 'http://10.0.2.2:8080' : 'http://127.0.0.1:8080';
+  // Production Server User
+  static final String _baseUrl = 'http://85.90.244.28:8080';
 
   static Future<Map<String, String>> _getHeaders({bool isMultipart = false}) async {
     final prefs = await SharedPreferences.getInstance();
