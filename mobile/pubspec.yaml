@@ -1,0 +1,27 @@
+name: undawriter_insure
+description: UndaWriter Mobile App
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  image_picker: ^1.0.4  # For camera uploads (Claims)
+  http: ^1.1.0        # For API calls
+  shared_preferences: ^2.2.2 # For auth session
+  intl: ^0.19.0 # For currency formatting
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/logo/
