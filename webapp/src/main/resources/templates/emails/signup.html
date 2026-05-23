@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to UndaWriter Insure</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #032555;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .header img {
+            max-width: 150px;
+            margin-bottom: 15px;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 30px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .footer {
+            background-color: #f1f1f1;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #777777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- Embedding the Google Drive Logo -->
+            <img src="https://drive.google.com/uc?export=view&id=19A4vp5OOFUhYjrNgvl5nLhwukC7K9TAb" alt="UndaWriter Insure Logo" />
+            <h2>Welcome to UndaWriter Insure!</h2>
+        </div>
+        <div class="content">
+            <p>Hi <span th:text="${name}">Customer</span>,</p>
+            <p>Thank you for signing up with UndaWriter Insure. We are thrilled to have you on board.</p>
+            <p>Our platform makes it easy to purchase and manage all your insurance policies directly from your dashboard.</p>
+            <!-- Inline styles for better email client compatibility -->
+            <a href="#" style="display: inline-block; background-color: #032555; color: #ffffff !important; text-decoration: none; padding: 12px 24px; border-radius: 5px; margin-top: 20px; font-weight: bold;">Explore Policies</a>
+        </div>
+        <div class="footer">
+            <p>&copy; 2026 UndaWriter Insure. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

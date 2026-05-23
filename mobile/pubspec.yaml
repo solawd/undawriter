@@ -15,6 +15,7 @@ dependencies:
   http: ^1.1.0        # For API calls
   shared_preferences: ^2.2.2 # For auth session
   intl: ^0.19.0 # For currency formatting
+  signature: ^6.3.0
 
 dev_dependencies:
   flutter_test:

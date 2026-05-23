@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:undawriter_insure/screens/main_layout.dart';
+import 'package:undawriter_insure/screens/payment_screen.dart';
 import 'package:undawriter_insure/services/api_service.dart';
 
 class QuoteScreen extends StatefulWidget {
@@ -113,7 +113,7 @@ class _QuoteScreenState extends State<QuoteScreen> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context); // Close the modal
-                  _buyPolicy();           // Proceed to buy
+                  _proceedToPayment();    // Proceed to payment screen
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF061944),
@@ -129,48 +129,35 @@ class _QuoteScreenState extends State<QuoteScreen> {
     );
   }
 
-  void _buyPolicy() async {
+  void _proceedToPayment() {
     if (!_formKey.currentState!.validate()) return;
     
-    setState(() => _isLoading = true);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Redirecting to Paystack for GHS ${_quote!['total']}...')),
-    );
+    double sum = double.tryParse(_sumInsuredController.text) ?? 0.0;
+    double totalPremium = double.tryParse(_quote!['total'].toString()) ?? 0.0;
     
-    try {
-      double sum = double.tryParse(_sumInsuredController.text) ?? 0.0;
-      double totalPremium = double.tryParse(_quote!['total'].toString()) ?? 0.0;
-      
-      await ApiService.purchaseMotorPolicy({
-        'regNumber': _regNumberController.text,
-        'chassisNumber': _chassisNumberController.text,
-        'makeModel': _makeModelController.text,
-        'year': int.tryParse(_yearController.text) ?? 2021,
-        'bodyType': _bodyTypeController.text,
-        'seatingCapacity': int.tryParse(_seatingCapacityController.text) ?? 5,
-        'usage': _usage,
-        'coverageType': _coverageType,
-        'sumInsured': sum,
-        'durationMonths': int.tryParse(_durationMonthsController.text) ?? 12,
-        'totalPremium': totalPremium,
-      });
+    final policyData = {
+      'regNumber': _regNumberController.text,
+      'chassisNumber': _chassisNumberController.text,
+      'makeModel': _makeModelController.text,
+      'year': int.tryParse(_yearController.text) ?? 2021,
+      'bodyType': _bodyTypeController.text,
+      'seatingCapacity': int.tryParse(_seatingCapacityController.text) ?? 5,
+      'usage': _usage,
+      'coverageType': _coverageType,
+      'sumInsured': sum,
+      'durationMonths': int.tryParse(_durationMonthsController.text) ?? 12,
+      'totalPremium': totalPremium,
+    };
 
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Payment Successful! Policy Issued.')),
-      );
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const MainLayout()),
-        (route) => false,
-      );
-    } catch(e) {
-      if (!mounted) return;
-      setState(() => _isLoading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Purchase failed: $e')),
-      );
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PaymentScreen(
+          policyData: policyData,
+          totalPremium: totalPremium,
+        ),
+      ),
+    );
   }
 
   @override

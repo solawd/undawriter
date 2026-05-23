@@ -16,4 +16,11 @@ public class PurchaseMotorRequest {
     private BigDecimal sumInsured;
     private Integer durationMonths;
     private BigDecimal totalPremium; // The amount to charge
+    
+    // Payment specific fields
+    private String paymentChannel; // e.g., MOBILE_MONEY, CARD
+    private String paymentReference;
+    private String mobileNetwork;
+    private String mobileNumber;
+    private String cardNumber;
 }

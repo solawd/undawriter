@@ -51,7 +51,7 @@ public class MotorDetails {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = "\"usage\"")
+    @Column(nullable = false, name = "vehicle_usage")
     private Usage usage;
 
     public enum CoverageType {

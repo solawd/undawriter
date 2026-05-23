@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { fetchWithAuth } from "@/lib/api";
 import { useRouter } from "next/navigation";
 
 export default function MotorInsurance() {
   const router = useRouter();
-  const [isPurchasing, setIsPurchasing] = useState(false);
   const [formData, setFormData] = useState({
     regNumber: "",
     chassisNumber: "",
@@ -20,12 +18,11 @@ export default function MotorInsurance() {
     durationMonths: 12
   });
   const [quote, setQuote] = useState<any>(null);
+  const [showModal, setShowModal] = useState(false);
 
-  const handleGetQuote = async (e: any) => {
+  const handleGetQuote = (e: any) => {
     e.preventDefault();
     // Simulate API Call for MVP offline mode
-    // In production, fetch API: /api/v1/quotes/calculate
-    // Pro-rate the premium based on the selected duration
     const annualBasePremium = parseFloat(formData.sumInsured) * (formData.coverageType === "Comprehensive" ? 0.05 : 0.02);
     const basePremium = annualBasePremium * (formData.durationMonths / 12);
     const nicLevy = basePremium * 0.015;
@@ -38,31 +35,13 @@ export default function MotorInsurance() {
       totalPremium: total.toFixed(2),
       currency: "GHS",
     });
+    setShowModal(true);
   };
 
-  const handlePurchase = async () => {
-    setIsPurchasing(true);
-    try {
-      const response = await fetchWithAuth("/api/v1/payments/purchase/motor", {
-        method: "POST",
-        body: JSON.stringify({
-          ...formData,
-          totalPremium: quote.totalPremium
-        })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        router.push(`/customer/policies/receipt?id=${data.policyId}`); // Redirect to receipt page using Next.js router
-      } else {
-        alert("Failed to purchase policy. Please try again.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("An error occurred during purchase.");
-    } finally {
-      setIsPurchasing(false);
-    }
+  const proceedToPayment = () => {
+    sessionStorage.setItem("motorFormData", JSON.stringify(formData));
+    sessionStorage.setItem("motorQuoteData", JSON.stringify(quote));
+    router.push("/customer/motor/payment");
   };
 
   return (
@@ -212,30 +191,52 @@ export default function MotorInsurance() {
         </button>
       </form>
 
-      {quote && (
-        <div className="mt-10 p-6 bg-blue-50 border-l-4 border-secondary rounded-r-xl">
-          <h2 className="text-2xl font-bold text-primary mb-4">Your Quote</h2>
-          <div className="space-y-2 text-lg">
-            <p><span className="font-semibold text-gray-700">Base Premium:</span> {quote.currency} {quote.basePremium}</p>
-            <p><span className="font-semibold text-gray-700">NIC Levy (1.5%):</span> {quote.currency} {quote.nicLevy}</p>
-            <p><span className="font-semibold text-gray-700">Sticker Fee:</span> {quote.currency} {quote.stickerFee}</p>
-            <div className="border-t-2 border-primary border-opacity-20 my-4 pt-4">
-              <p className="text-2xl font-bold text-primary flex justify-between items-center">
-                <span>Total Amount</span>
-                <span>{quote.currency} {quote.totalPremium}</span>
-              </p>
+      {/* Quote Modal */}
+      {showModal && quote && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+            <div className="bg-blue-50 p-6 border-b border-blue-100">
+              <h2 className="text-2xl font-bold text-primary">Your Quote</h2>
+              <p className="text-sm text-gray-500 mt-1">Review your calculated premium.</p>
+            </div>
+            
+            <div className="p-6 space-y-4 text-lg">
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-600">Base Premium</span>
+                <span className="text-gray-800">{quote.currency} {quote.basePremium}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-600">NIC Levy (1.5%)</span>
+                <span className="text-gray-800">{quote.currency} {quote.nicLevy}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-600">Sticker Fee</span>
+                <span className="text-gray-800">{quote.currency} {quote.stickerFee}</span>
+              </div>
+              
+              <div className="border-t border-gray-200 my-4 pt-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-xl font-bold text-primary">Total Amount</span>
+                  <span className="text-2xl font-black text-secondary">{quote.currency} {quote.totalPremium}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 bg-gray-50 flex space-x-4">
+              <button
+                onClick={() => setShowModal(false)}
+                className="flex-1 bg-white border border-gray-300 text-gray-700 p-3 rounded-xl font-bold hover:bg-gray-100 transition-all"
+              >
+                Close
+              </button>
+              <button
+                onClick={proceedToPayment}
+                className="flex-1 bg-secondary text-white p-3 rounded-xl font-bold hover:bg-opacity-90 transition-all shadow-md"
+              >
+                Buy Policy Now
+              </button>
             </div>
           </div>
-
-          <button
-            onClick={handlePurchase}
-            disabled={isPurchasing}
-            className={`mt-6 w-full text-white p-4 rounded-xl font-bold transition-all text-lg shadow-md ${
-              isPurchasing ? 'bg-gray-400 cursor-not-allowed' : 'bg-secondary hover:bg-opacity-90'
-            }`}
-          >
-            {isPurchasing ? "Processing Purchase..." : "Buy Policy Now"}
-          </button>
         </div>
       )}
     </div>

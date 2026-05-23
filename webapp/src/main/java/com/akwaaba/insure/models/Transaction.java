@@ -54,6 +54,11 @@ public class Transaction {
 
     private String reference;
 
+    private String paymentChannel; // e.g., MOBILE_MONEY, CARD
+    private String mobileNetwork;
+    private String mobileNumber;
+    private String cardLast4;
+
     @Column(nullable = false, updatable = false)
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();

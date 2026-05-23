@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction Successful</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #032555;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .header img {
+            max-width: 150px;
+            margin-bottom: 15px;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 30px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .details-box {
+            background-color: #f9f9f9;
+            border: 1px solid #eeeeee;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .details-box strong {
+            display: inline-block;
+            width: 120px;
+        }
+        .footer {
+            background-color: #f1f1f1;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #777777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- Embedding the Google Drive Logo -->
+            <img src="https://drive.google.com/uc?export=view&id=19A4vp5OOFUhYjrNgvl5nLhwukC7K9TAb" alt="UndaWriter Insure Logo" />
+            <h2>Payment Successful!</h2>
+        </div>
+        <div class="content">
+            <p>Hi <span th:text="${name}">Customer</span>,</p>
+            <p>Your payment for the insurance policy was successful. Your policy is now active.</p>
+            
+            <div class="details-box">
+                <p><strong>Policy ID:</strong> <span th:text="${policyId}">12345</span></p>
+                <p><strong>Product Type:</strong> <span th:text="${productType}">MOTOR</span></p>
+                <p><strong>Amount Paid:</strong> GHS <span th:text="${amount}">0.00</span></p>
+                <p><strong>Valid From:</strong> <span th:text="${startDate}">2026-01-01</span></p>
+                <p><strong>Valid To:</strong> <span th:text="${endDate}">2027-01-01</span></p>
+            </div>
+            
+            <p>You can download your policy documents and manage your account directly from your dashboard.</p>
+            <p><strong>Note:</strong> We have attached your signed Policy Document and your NIC Sticker to this email for your records.</p>
+            <p>Thank you for choosing UndaWriter Insure.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2026 UndaWriter Insure. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

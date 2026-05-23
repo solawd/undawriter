@@ -27,6 +27,7 @@ public class PaymentService {
     private final UserRepository userRepository;
     private final MotorDetailsRepository motorDetailsRepository;
     private final TransactionRepository transactionRepository;
+    private final EmailService emailService;
 
     // Simulates sending request to Paystack to get checkout URL
     public String initializePayment(Long policyId) {
@@ -100,6 +101,15 @@ public class PaymentService {
                 .build();
         motorDetailsRepository.save(motorDetails);
 
+        String cardLast4 = null;
+        if (request.getCardNumber() != null && request.getCardNumber().length() >= 4) {
+            cardLast4 = request.getCardNumber().substring(request.getCardNumber().length() - 4);
+        }
+
+        String txReference = request.getPaymentReference() != null && !request.getPaymentReference().isEmpty() 
+            ? request.getPaymentReference() 
+            : "INSTANT_" + UUID.randomUUID().toString().substring(0, 8);
+
         // Create Transaction
         Transaction transaction = Transaction.builder()
                 .user(user)
@@ -107,10 +117,16 @@ public class PaymentService {
                 .amount(request.getTotalPremium())
                 .type(Transaction.Type.PAYMENT)
                 .status(Transaction.Status.SUCCESS)
-                .reference("INSTANT_" + UUID.randomUUID().toString().substring(0, 8))
+                .reference(txReference)
+                .paymentChannel(request.getPaymentChannel())
+                .mobileNetwork(request.getMobileNetwork())
+                .mobileNumber(request.getMobileNumber())
+                .cardLast4(cardLast4)
                 .build();
         transactionRepository.save(transaction);
 
+        // Email is now sent after the user signs the document in SignatureController
+        
         return policy;
     }
 }

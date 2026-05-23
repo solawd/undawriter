@@ -142,4 +142,19 @@ class ApiService {
       throw Exception('Failed to submit claim: ${response.statusCode}');
     }
   }
+
+  static Future<Map<String, dynamic>> signPolicy(String policyId, String signatureBase64) async {
+    final url = Uri.parse('$_baseUrl/api/v1/policies/$policyId/sign');
+    final response = await http.post(
+      url,
+      headers: await _getHeaders(),
+      body: jsonEncode({'signatureBase64': signatureBase64}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to sign policy: ${response.statusCode}');
+    }
+  }
 }

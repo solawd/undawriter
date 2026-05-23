@@ -7,6 +7,7 @@ import com.undawriter.insure.payload.response.JwtResponse;
 import com.undawriter.insure.repositories.UserRepository;
 import com.undawriter.insure.security.jwt.JwtUtils;
 import com.undawriter.insure.security.services.UserDetailsImpl;
+import com.undawriter.insure.services.EmailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
+    private final EmailService emailService;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -67,6 +69,8 @@ public class AuthController {
                 .build();
 
         userRepository.save(user);
+        
+        emailService.sendSignupEmail(user);
 
         return ResponseEntity.ok("User registered successfully!");
     }

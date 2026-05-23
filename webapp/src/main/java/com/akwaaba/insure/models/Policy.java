@@ -60,6 +60,8 @@ public class Policy {
     private String nicStickerId;
     
     private String policyDocumentUrl;
+    
+    private String stickerDocumentUrl;
 
     @Column(nullable = false, updatable = false)
     @Builder.Default
