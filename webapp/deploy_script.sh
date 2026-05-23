@@ -39,6 +39,7 @@ After=network.target
 [Service]
 User=root
 WorkingDirectory=$APP_DIR
+EnvironmentFile=$APP_DIR/.env
 ExecStart=/usr/bin/java -jar $JAR_ABS_PATH --server.address=0.0.0.0
 SuccessExitStatus=143
 TimeoutStopSec=10
