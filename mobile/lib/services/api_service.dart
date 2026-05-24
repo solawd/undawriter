@@ -7,7 +7,11 @@ class ApiService {
   // Production Server User
   static final String _baseUrl = 'http://85.90.244.28:8080';
 
-  static Future<Map<String, String>> _getHeaders({bool isMultipart = false}) async {
+  // static final String _baseUrl = 'http://localhost:8080';
+  static String get baseUrl => _baseUrl;
+
+  static Future<Map<String, String>> _getHeaders(
+      {bool isMultipart = false}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
@@ -22,7 +26,8 @@ class ApiService {
   }
 
   // --- AUTH ---
-  static Future<Map<String, dynamic>> login(String email, String password) async {
+  static Future<Map<String, dynamic>> login(
+      String email, String password) async {
     final url = Uri.parse('$_baseUrl/api/v1/auth/login');
     final response = await http.post(
       url,
@@ -41,7 +46,7 @@ class ApiService {
       throw Exception('Failed to login: ${response.statusCode}');
     }
   }
-  
+
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
@@ -71,7 +76,8 @@ class ApiService {
   }
 
   // --- QUOTES & PAYMENTS ---
-  static Future<Map<String, dynamic>> calculateQuote(Map<String, dynamic> request) async {
+  static Future<Map<String, dynamic>> calculateQuote(
+      Map<String, dynamic> request) async {
     final url = Uri.parse('$_baseUrl/api/v1/quotes/calculate');
     final response = await http.post(
       url,
@@ -86,7 +92,8 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> purchaseMotorPolicy(Map<String, dynamic> request) async {
+  static Future<Map<String, dynamic>> purchaseMotorPolicy(
+      Map<String, dynamic> request) async {
     final url = Uri.parse('$_baseUrl/api/v1/payments/purchase/motor');
     final response = await http.post(
       url,
@@ -113,7 +120,8 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> submitClaim(String policyId, String payoutType, String description, List<File>? evidences) async {
+  static Future<Map<String, dynamic>> submitClaim(String policyId,
+      String payoutType, String description, List<File>? evidences) async {
     final url = Uri.parse('$_baseUrl/api/v1/claims/file');
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll(await _getHeaders(isMultipart: true));
@@ -125,7 +133,7 @@ class ApiService {
     if (evidences != null && evidences.isNotEmpty) {
       for (var evidence in evidences) {
         request.files.add(await http.MultipartFile.fromPath(
-          'files', 
+          'files',
           evidence.path,
         ));
       }
@@ -143,7 +151,8 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> signPolicy(String policyId, String signatureBase64) async {
+  static Future<Map<String, dynamic>> signPolicy(
+      String policyId, String signatureBase64) async {
     final url = Uri.parse('$_baseUrl/api/v1/policies/$policyId/sign');
     final response = await http.post(
       url,
@@ -155,6 +164,39 @@ class ApiService {
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to sign policy: ${response.statusCode}');
+    }
+  }
+
+  static Future<List<dynamic>> getClaimMessages(String claimId) async {
+    final url = Uri.parse('$_baseUrl/api/v1/claims/$claimId/messages');
+    final response = await http.get(url, headers: await _getHeaders());
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load messages: ${response.statusCode}');
+    }
+  }
+
+  static Future<Map<String, dynamic>> postClaimMessage(
+      String claimId, String message,
+      {int? parentId}) async {
+    final url = Uri.parse('$_baseUrl/api/v1/claims/$claimId/messages');
+    final body = <String, dynamic>{'message': message};
+    if (parentId != null) {
+      body['parentId'] = parentId;
+    }
+
+    final response = await http.post(
+      url,
+      headers: await _getHeaders(),
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to post message: ${response.statusCode}');
     }
   }
 }

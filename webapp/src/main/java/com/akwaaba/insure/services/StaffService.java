@@ -40,6 +40,7 @@ public class StaffService {
     private final HomeDetailsRepository homeDetailsRepository;
     private final TravelDetailsRepository travelDetailsRepository;
     private final UserRepository userRepository;
+    private final com.undawriter.insure.repositories.ClaimMessageRepository claimMessageRepository;
 
     public DashboardStatsResponse getDashboardStats() {
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(6).withHour(0).withMinute(0).withSecond(0).withNano(0);
@@ -176,5 +177,28 @@ public class StaffService {
                 .stream()
                 .map(ClaimResponse::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    public List<com.undawriter.insure.models.ClaimMessageResponse> getClaimMessages(Long claimId) {
+        return claimMessageRepository.findByClaimIdOrderByCreatedAtAsc(claimId).stream()
+                .map(com.undawriter.insure.models.ClaimMessageResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public com.undawriter.insure.models.ClaimMessageResponse addClaimMessage(Long claimId, com.undawriter.insure.models.ClaimMessageRequest request, String email) {
+        Claim claim = claimRepository.findById(claimId).orElseThrow(() -> new IllegalArgumentException("Claim not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        com.undawriter.insure.models.ClaimMessage parent = null;
+        if (request.getParentId() != null) {
+            parent = claimMessageRepository.findById(request.getParentId()).orElse(null);
+        }
+        com.undawriter.insure.models.ClaimMessage message = com.undawriter.insure.models.ClaimMessage.builder()
+                .claim(claim)
+                .user(user)
+                .parent(parent)
+                .message(request.getMessage())
+                .createdAt(LocalDateTime.now())
+                .build();
+        return com.undawriter.insure.models.ClaimMessageResponse.fromEntity(claimMessageRepository.save(message));
     }
 }

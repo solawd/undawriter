@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { fetchWithAuth } from "@/lib/api";
+import ClaimMessages from "@/components/ClaimMessages";
 
 function StaffClaimDetailContent() {
   const searchParams = useSearchParams();
@@ -135,6 +136,8 @@ function StaffClaimDetailContent() {
                 <p className="font-semibold text-right">{claim.customerName}</p>
              </div>
           </div>
+
+          <ClaimMessages claimId={claim.id} apiBaseUrl="/api/v1/staff/claims" />
         </div>
 
         {/* Right Column: Update Status Form */}

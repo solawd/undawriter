@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:undawriter_insure/services/api_service.dart';
 import 'package:undawriter_insure/screens/new_claim_screen.dart';
+import 'package:undawriter_insure/screens/claim_detail_screen.dart' as undawriter_insure_claim_detail;
 
 class ClaimScreen extends StatefulWidget {
   const ClaimScreen({super.key});
@@ -12,7 +13,6 @@ class ClaimScreen extends StatefulWidget {
 class _ClaimScreenState extends State<ClaimScreen> {
   bool _isLoading = true;
   List<dynamic> _claims = [];
-  String? _error;
 
   @override
   void initState() {
@@ -30,7 +30,6 @@ class _ClaimScreenState extends State<ClaimScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e.toString();
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
@@ -163,8 +162,18 @@ class _ClaimScreenState extends State<ClaimScreen> {
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => undawriter_insure_claim_detail.ClaimDetailScreen(claim: claim),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -257,6 +266,7 @@ class _ClaimScreenState extends State<ClaimScreen> {
               )
             ]
           ],
+        ),
         ),
       ),
     );

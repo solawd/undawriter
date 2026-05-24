@@ -91,6 +91,14 @@ export default function Claims() {
                           <p className="text-gray-700">{claim.adjusterNotes}</p>
                         </div>
                      )}
+                     <div className="col-span-2 mt-4 flex justify-end">
+                       <Link 
+                         href={`/customer/claims/detail?id=${claim.id}`}
+                         className="text-secondary font-bold hover:underline flex items-center gap-1 bg-secondary/10 px-4 py-2 rounded-lg"
+                       >
+                         View Details & Discuss <span className="text-lg">💬</span>
+                       </Link>
+                     </div>
                   </div>
                 </div>
               );

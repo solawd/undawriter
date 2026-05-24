@@ -35,4 +35,17 @@ public class ClaimController {
         // Staff portal would use this to list claims for review
         return ResponseEntity.ok(claimService.getAllClaims());
     }
+
+    @GetMapping("/{id}/messages")
+    public ResponseEntity<List<com.undawriter.insure.models.ClaimMessageResponse>> getClaimMessages(@PathVariable Long id, Authentication authentication) {
+        return ResponseEntity.ok(claimService.getClaimMessages(id, authentication.getName()));
+    }
+
+    @PostMapping("/{id}/messages")
+    public ResponseEntity<com.undawriter.insure.models.ClaimMessageResponse> addClaimMessage(
+            @PathVariable Long id, 
+            @RequestBody com.undawriter.insure.models.ClaimMessageRequest request, 
+            Authentication authentication) {
+        return ResponseEntity.ok(claimService.addClaimMessage(id, request, authentication.getName()));
+    }
 }

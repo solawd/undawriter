@@ -39,12 +39,24 @@ function PolicyReceiptContent() {
     <div className="max-w-4xl mx-auto space-y-8">
       <div className="flex justify-between items-center print:hidden">
         <h1 className="text-3xl font-bold text-primary">Policy Receipt</h1>
-        <button 
-          onClick={handlePrint}
-          className="bg-secondary text-white px-6 py-2 rounded-lg font-bold hover:bg-opacity-90 transition-all flex items-center gap-2 shadow-sm"
-        >
-          <span>🖨️</span> Print Sticker
-        </button>
+        <div className="flex items-center gap-3">
+          {policy.policyDocumentUrl && (
+            <a 
+              href={policy.policyDocumentUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-white text-secondary border-2 border-secondary px-6 py-2 rounded-lg font-bold hover:bg-secondary/10 transition-all flex items-center gap-2 shadow-sm"
+            >
+              <span>📄</span> Download Policy
+            </a>
+          )}
+          <button 
+            onClick={handlePrint}
+            className="bg-secondary text-white px-6 py-2 rounded-lg font-bold hover:bg-opacity-90 transition-all flex items-center gap-2 shadow-sm"
+          >
+            <span>🖨️</span> Print Sticker
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

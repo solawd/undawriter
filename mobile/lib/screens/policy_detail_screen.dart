@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:undawriter_insure/widgets/nic_sticker_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:undawriter_insure/services/api_service.dart';
 
 class PolicyDetailScreen extends StatelessWidget {
   final Map<String, dynamic> policy;
@@ -60,18 +62,68 @@ class PolicyDetailScreen extends StatelessWidget {
             const SizedBox(height: 48),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 0),
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Downloading digital sticker/certificate...')),
-                  );
-                },
-                icon: const Icon(Icons.file_download),
-                label: const Text('Download Certificate'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF061944),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (policyData['policyDocumentUrl'] != null && policyData['policyDocumentUrl'].toString().isNotEmpty)
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        final fullUrl = '${ApiService.baseUrl}${policyData['policyDocumentUrl']}';
+                        final uri = Uri.parse(fullUrl);
+                        try {
+                          final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+                          if (!launched) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Could not open policy document link.')),
+                            );
+                          }
+                        } catch(e) {
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Could not open policy document link.')),
+                          );
+                        }
+                      },
+                      icon: const Icon(Icons.description),
+                      label: const Text('Download Policy Document'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: const Color(0xFF061944),
+                        side: const BorderSide(color: Color(0xFF061944)),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
+                  if (policyData['policyDocumentUrl'] != null && policyData['stickerDocumentUrl'] != null)
+                    const SizedBox(height: 16),
+                  if (policyData['stickerDocumentUrl'] != null && policyData['stickerDocumentUrl'].toString().isNotEmpty)
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        final fullUrl = '${ApiService.baseUrl}${policyData['stickerDocumentUrl']}';
+                        final uri = Uri.parse(fullUrl);
+                        try {
+                          final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+                          if (!launched) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Could not open sticker link.')),
+                            );
+                          }
+                        } catch(e) {
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Could not open sticker link.')),
+                          );
+                        }
+                      },
+                      icon: const Icon(Icons.file_download),
+                      label: const Text('Download Sticker'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF061944),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
+                ],
               ),
             ),
           ],

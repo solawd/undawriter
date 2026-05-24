@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -97,6 +98,19 @@ public class StaffController {
         Claim.Status status = Claim.Status.valueOf(request.get("status"));
         String adjusterNotes = request.get("adjusterNotes");
         return ResponseEntity.ok(staffService.updateClaimStatus(id, status, adjusterNotes));
+    }
+
+    @GetMapping("/claims/{id}/messages")
+    public ResponseEntity<List<com.undawriter.insure.models.ClaimMessageResponse>> getClaimMessages(@PathVariable Long id) {
+        return ResponseEntity.ok(staffService.getClaimMessages(id));
+    }
+
+    @PostMapping("/claims/{id}/messages")
+    public ResponseEntity<com.undawriter.insure.models.ClaimMessageResponse> addClaimMessage(
+            @PathVariable Long id,
+            @RequestBody com.undawriter.insure.models.ClaimMessageRequest request,
+            Authentication authentication) {
+        return ResponseEntity.ok(staffService.addClaimMessage(id, request, authentication.getName()));
     }
 
     @PutMapping("/profile")
